@@ -1,5 +1,7 @@
 from django.db import models
+
 from users.models import User
+
 
 class Client(models.Model):
     email = models.CharField(max_length=100, unique=True, verbose_name="Email")
@@ -29,8 +31,9 @@ class Message(models.Model):
     def __str__(self):
         return self.topic
 
+
 class Status(models.TextChoices):
-    CREATED = "created", 'Создана'
+    CREATED = "created", "Создана"
     STARTED = "started", "Запущена"
     COMPLETED = "completed", "Завершена"
     SUCCESS = "success", "Успешно"
@@ -63,4 +66,4 @@ class MailingAttempt(models.Model):
     class Meta:
         verbose_name = "Попытка рассылки"
         verbose_name_plural = "Попытки рассылки"
-        ordering = ['-attempt_time']
+        ordering = ["-attempt_time"]
