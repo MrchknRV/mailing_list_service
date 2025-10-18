@@ -152,4 +152,6 @@ CACHES = {
     }
 }
 
-LOGIN_REDIRECT_URL = "mailing:client_list"
+LOGIN_REDIRECT_URL = "mailing:index"
+LOGOUT_REDIRECT_URL = "mailing:index"
+LOGIN_URL = "users:login"

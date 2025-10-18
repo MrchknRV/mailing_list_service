@@ -1,11 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
-from .forms import ClientForm, MessageForm, MailingForm
-from .mixins import OwnerRequiredMixin, OwnerQuerysetMixin
-from .models import Client, Message, Mailing, MailingAttempt, Status
+from .forms import ClientForm, MailingForm, MessageForm
+from .mixins import OwnerQuerysetMixin, OwnerRequiredMixin
+from .models import Client, Mailing, MailingAttempt, Message, Status
 
 
 class IndexView(TemplateView):
