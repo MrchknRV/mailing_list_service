@@ -1,0 +1,18 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'mailing:index' %}">
+            <i class="fas fa-paper-plane me-2"></i>Система рассылок
+        </a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="{% url 'mailing:client_list' %}">
+                <i class="fas fa-users me-1"></i>Клиенты
+            </a>
+            <a class="nav-link" href="{% url 'mailing:message_list' %}">
+                <i class="fas fa-envelope me-1"></i>Сообщения
+            </a>
+            <a class="nav-link" href="{% url 'mailing:mailing_list' %}">
+                <i class="fas fa-bullhorn me-1"></i>Рассылки
+            </a>
+        </div>
+    </div>
+</nav>

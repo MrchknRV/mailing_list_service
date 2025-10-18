@@ -12,9 +12,9 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ("subject", "owner")
+    list_display = ("topic", "owner")
     list_filter = ("owner",)
-    search_fields = ("subject", "body")
+    search_fields = ("topic", "body")
 
 
 @admin.register(Mailing)

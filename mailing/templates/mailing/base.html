@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Система рассылок{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+{% include 'mailing/includes/header.html' %}
+<body>
+<div class="container mt-4">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+    {% block extra_css %}{% endblock %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

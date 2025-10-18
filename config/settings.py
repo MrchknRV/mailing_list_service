@@ -151,3 +151,5 @@ CACHES = {
         "LOCATION": os.getenv("REDIS_CACHE_LOCATION"),
     }
 }
+
+LOGIN_REDIRECT_URL = "mailing:client_list"
