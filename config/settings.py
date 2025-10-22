@@ -131,6 +131,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -151,3 +152,7 @@ CACHES = {
         "LOCATION": os.getenv("REDIS_CACHE_LOCATION"),
     }
 }
+
+LOGIN_REDIRECT_URL = "mailing:index"
+LOGOUT_REDIRECT_URL = "mailing:index"
+LOGIN_URL = "users:login"
