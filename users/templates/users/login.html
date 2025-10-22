@@ -1,0 +1,63 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Вход | Система рассылок{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0 text-center">
+                    <i class="fas fa-sign-in-alt me-2"></i>Вход в систему
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            <i class="fas fa-user me-1"></i>Имя пользователя или Email
+                        </label>
+                        {{ form.username }}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">
+                            <i class="fas fa-lock me-1"></i>Пароль
+                        </label>
+                        {{ form.password }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-sign-in-alt me-1"></i>Войти
+                    </button>
+                    
+                    <div class="text-center mb-3">
+                        <small class="text-muted">
+                            <a href="{% url 'users:password_reset' %}" class="text-decoration-none">
+                                Забыли пароль?
+                            </a>
+                        </small>
+                    </div>
+                    
+                    <div class="text-center">
+                        <small class="text-muted">
+                            Нет аккаунта? 
+                            <a href="{% url 'users:register' %}" class="text-decoration-none">Зарегистрируйтесь</a>
+                        </small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

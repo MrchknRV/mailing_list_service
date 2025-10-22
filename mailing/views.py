@@ -1,11 +1,14 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
 from .forms import ClientForm, MailingForm, MessageForm
 from .mixins import OwnerQuerysetMixin, OwnerRequiredMixin
 from .models import Client, Mailing, MailingAttempt, Message, Status
+from .services import EmailService
 
 
 class IndexView(TemplateView):
@@ -156,3 +159,29 @@ class MailingDetailView(LoginRequiredMixin, DetailView, OwnerRequiredMixin):
     template_name = "mailing/mailing_detail.html"
     context_object_name = "mailing"
     login_url = reverse_lazy("mailing:login")
+
+
+class MailingSendView(LoginRequiredMixin, TemplateView):
+
+    def post(self, request, pk):
+        mailing = get_object_or_404(Mailing, pk=pk, owner=request.user)
+
+        if mailing.status == Status.COMPLETED:
+            messages.error(request, "Нельзя отправить завершенную рассылку.")
+            return redirect("mailing:mailing_detail", pk=pk)
+
+        if not mailing.clients.exists():
+            messages.error(request, "Нельзя отправить рассылку без клиентов.")
+            return redirect("mailing:mailing_detail", pk=pk)
+
+        success_send, failed_send = EmailService.send_mass_mailing(mailing)
+
+        if success_send > 0:
+            messages.success(request, f"Рассылка отправлена! Успешно: {success_send}, Неудачно: {failed_send}")
+        else:
+            messages.error(request, f"Не удалось отправить рассылку. Неудачных отправок: {failed_send}")
+
+        return redirect("mailing:mailing_detail", pk=pk)
+
+
+class MailingSendOneView(LoginRequiredMixin, TemplateView): ...

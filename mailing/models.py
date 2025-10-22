@@ -60,11 +60,20 @@ class Mailing(models.Model):
         return f"Рассылка: {self.id} - {self.get_status_display()}"
 
 
+class MailingAttemptManager(models.Manager):
+    def success(self):
+        return self.filter(status=Status.SUCCESS)
+
+    def failed(self):
+        return self.filter(status=Status.FAILED)
+
+
 class MailingAttempt(models.Model):
     attempt_time = models.DateTimeField(auto_now_add=True, verbose_name="Время попытки")
     status = models.CharField(max_length=10, choices=Status.choices, verbose_name="Статус")
     mail_server_response = models.TextField(verbose_name="Ответ сервера", blank=True, null=True)
     mailing = models.ForeignKey(Mailing, on_delete=models.CASCADE, verbose_name="Рассылка")
+    objects = MailingAttemptManager()
 
     class Meta:
         verbose_name = "Попытка рассылки"

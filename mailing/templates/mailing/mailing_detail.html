@@ -4,9 +4,53 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Информация о рассылке #{{ mailing.id }}</h1>
     <div>
+
+        {% if mailing.clients.all %}
+        <form method="post" action="{% url 'mailing:mailing_send_test' mailing.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-warning me-2">
+                <i class="fas fa-vial me-1"></i>Тестовая отправка
+            </button>
+        </form>
+        <form method="post" action="{% url 'mailing:mailing_send' mailing.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success me-2">
+                <i class="fas fa-paper-plane me-1"></i>Отправить рассылку
+            </button>
+        </form>
+        {% endif %}
+
         <a href="{% url 'mailing:mailing_update' mailing.pk %}" class="btn btn-outline-secondary">Редактировать</a>
         <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-outline-danger">Удалить</a>
         <a href="{% url 'mailing:mailing_list' %}" class="btn btn-primary">Назад к списку</a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-chart-bar me-2"></i>Статистика отправки
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <h6 class="text-muted">Всего клиентов</h6>
+                <h4>{{ mailing.clients.count }}</h4>
+            </div>
+            <div class="col-md-3">
+                <h6 class="text-muted">Успешных отправок</h6>
+                <h4 class="text-success">{{ mailing.mailingattempt_set.success.count }}</h4>
+            </div>
+            <div class="col-md-3">
+                <h6 class="text-muted">Неудачных отправок</h6>
+                <h4 class="text-danger">{{ mailing.mailingattempt_set.failed.count }}</h4>
+            </div>
+            <div class="col-md-3">
+                <h6 class="text-muted">Общее количество</h6>
+                <h4>{{ mailing.mailingattempt_set.count }}</h4>
+            </div>
+        </div>
     </div>
 </div>
 
