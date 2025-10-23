@@ -3,10 +3,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
+from users.mixins import UserNotBlockedMixin
 from .forms import ClientForm, MailingForm, MessageForm
-from .mixins import OwnerQuerysetMixin, OwnerRequiredMixin
+from users.mixins import OwnerOrManagerRequiredMixin
+from .mixins import OwnerRequiredMixin, OwnerQuerysetMixin
 from .models import Client, Mailing, MailingAttempt, Message, Status
 from .services import EmailService
 
@@ -22,13 +25,13 @@ class IndexView(TemplateView):
         return context
 
 
-class ClientListView(OwnerQuerysetMixin, LoginRequiredMixin, ListView):
+class ClientListView(LoginRequiredMixin, UserNotBlockedMixin, OwnerQuerysetMixin, ListView):
     model = Client
     context_object_name = "clients"
     template_name = "mailing/client_list.html"
 
 
-class ClientCreateView(LoginRequiredMixin, CreateView, SuccessMessageMixin):
+class ClientCreateView(LoginRequiredMixin, UserNotBlockedMixin, SuccessMessageMixin, CreateView):
     model = Client
     form_class = ClientForm
     template_name = "mailing/client_form.html"
@@ -40,7 +43,8 @@ class ClientCreateView(LoginRequiredMixin, CreateView, SuccessMessageMixin):
         return super().form_valid(form)
 
 
-class ClientUpdateView(LoginRequiredMixin, UpdateView, SuccessMessageMixin, OwnerRequiredMixin):
+class ClientUpdateView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, SuccessMessageMixin,
+                       UpdateView):
     model = Client
     form_class = ClientForm
     template_name = "mailing/client_form.html"
@@ -48,26 +52,26 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView, SuccessMessageMixin, Owne
     success_message = "Клиент успешно обновлен!"
 
 
-class ClientDeleteView(LoginRequiredMixin, DeleteView, OwnerRequiredMixin):
+class ClientDeleteView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, DeleteView):
     model = Client
     template_name = "mailing/client_delete_confirm.html"
     success_url = reverse_lazy("mailing:client_list")
 
 
-class ClientDetailView(LoginRequiredMixin, DetailView, OwnerRequiredMixin):
+class ClientDetailView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, DetailView):
     model = Client
     template_name = "mailing/client_detail.html"
     context_object_name = "client"
     login_url = reverse_lazy("mailing:login")
 
 
-class MessageListView(LoginRequiredMixin, ListView, OwnerQuerysetMixin):
+class MessageListView(LoginRequiredMixin, UserNotBlockedMixin, OwnerQuerysetMixin, ListView):
     model = Message
     context_object_name = "messages"
     template_name = "mailing/message_list.html"
 
 
-class MessageCreateView(LoginRequiredMixin, CreateView, SuccessMessageMixin):
+class MessageCreateView(LoginRequiredMixin, UserNotBlockedMixin, SuccessMessageMixin, CreateView):
     model = Message
     form_class = MessageForm
     tempalte_name = "mailing/message_form.html"
@@ -79,7 +83,8 @@ class MessageCreateView(LoginRequiredMixin, CreateView, SuccessMessageMixin):
         return super().form_valid(form)
 
 
-class MessageUpdateView(LoginRequiredMixin, UpdateView, SuccessMessageMixin, OwnerRequiredMixin):
+class MessageUpdateView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, SuccessMessageMixin,
+                        UpdateView):
     model = Message
     form_class = MessageForm
     template_name = "mailing/message_form.html"
@@ -87,26 +92,26 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView, SuccessMessageMixin, Own
     success_message = "Сообщение успешно обновлено!"
 
 
-class MessageDeleteView(LoginRequiredMixin, DeleteView, OwnerRequiredMixin):
+class MessageDeleteView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, DeleteView):
     model = Message
     template_name = "mailing/message_delete_confirm.html"
     success_url = reverse_lazy("mailing:message_list")
 
 
-class MessageDetailView(LoginRequiredMixin, DetailView, OwnerRequiredMixin):
+class MessageDetailView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, DetailView):
     model = Message
     template_name = "mailing/message_detail.html"
     context_object_name = "message"
     login_url = reverse_lazy("mailing:login")
 
 
-class MailingListView(LoginRequiredMixin, ListView, OwnerQuerysetMixin):
+class MailingListView(LoginRequiredMixin, UserNotBlockedMixin, OwnerQuerysetMixin, ListView):
     model = Mailing
     context_object_name = "mailings"
     template_name = "mailing/mailing_list.html"
 
 
-class MailingCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class MailingCreateView(LoginRequiredMixin, UserNotBlockedMixin, SuccessMessageMixin, CreateView):
     model = Mailing
     form_class = MailingForm
     template_name = "mailing/mailing_form.html"
@@ -129,7 +134,8 @@ class MailingCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return context
 
 
-class MailingUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView, OwnerRequiredMixin):
+class MailingUpdateView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, SuccessMessageMixin,
+                        UpdateView):
     model = Mailing
     form_class = MailingForm
     template_name = "mailing/mailing_form.html"
@@ -148,20 +154,20 @@ class MailingUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView, Own
         return context
 
 
-class MailingDeleteView(LoginRequiredMixin, DeleteView, OwnerRequiredMixin):
+class MailingDeleteView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, DeleteView):
     model = Mailing
     template_name = "mailing/mailing_confirm_delete.html"
     success_url = reverse_lazy("mailing:mailing_list")
 
 
-class MailingDetailView(LoginRequiredMixin, DetailView, OwnerRequiredMixin):
+class MailingDetailView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, DetailView):
     model = Mailing
     template_name = "mailing/mailing_detail.html"
     context_object_name = "mailing"
     login_url = reverse_lazy("mailing:login")
 
 
-class MailingSendView(LoginRequiredMixin, TemplateView):
+class MailingSendView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, View):
 
     def post(self, request, pk):
         mailing = get_object_or_404(Mailing, pk=pk, owner=request.user)
@@ -184,4 +190,5 @@ class MailingSendView(LoginRequiredMixin, TemplateView):
         return redirect("mailing:mailing_detail", pk=pk)
 
 
-class MailingSendOneView(LoginRequiredMixin, TemplateView): ...
+class MailingSendOneView(LoginRequiredMixin, UserNotBlockedMixin, OwnerOrManagerRequiredMixin, View):
+    ...

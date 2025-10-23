@@ -6,10 +6,21 @@ from django.utils.crypto import get_random_string
 
 
 class User(AbstractUser):
+    ROLE_USER = "user"
+    ROLE_MANAGER = "manager"
+    ROLE_ADMIN = "admin"
+
+    ROLE_CHOICES = [
+        (ROLE_USER, "Пользователь"),
+        (ROLE_MANAGER, "Менеджер"),
+        (ROLE_ADMIN, "Администратор"),
+    ]
+
     email = models.EmailField(unique=True, verbose_name="Почта")
     verification_token = models.CharField(max_length=12, blank=True, verbose_name="Ключ подтверждения")
     is_verified = models.BooleanField(default=False, verbose_name="Подтвержден")
     is_blocked = models.BooleanField(default=False, verbose_name="Заблокирован")
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_USER, verbose_name="Роль")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
@@ -26,6 +37,14 @@ class User(AbstractUser):
         self.verification_token = token
         self.save()
         return token
+
+    @property
+    def is_manager(self):
+        return self.role == self.ROLE_MANAGER
+
+    @property
+    def is_admin(self):
+        return self.role == self.ROLE_ADMIN
 
 
 class UserProfile(models.Model):
