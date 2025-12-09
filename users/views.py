@@ -3,7 +3,6 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.views import LogoutView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
@@ -72,6 +71,7 @@ def verify_email(request, user_id, token):
     user = get_object_or_404(User, id=user_id)
     if user.verification_token == token:
         user.is_verified = True
+        user.is_active = True
         user.verification_token = None
         user.save()
         messages.success(request, "Ваш email подтвержден!")
