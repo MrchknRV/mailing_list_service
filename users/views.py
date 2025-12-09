@@ -71,6 +71,7 @@ def verify_email(request, user_id, token):
     user = get_object_or_404(User, id=user_id)
     if user.verification_token == token:
         user.is_verified = True
+        user.is_active = True
         user.verification_token = None
         user.save()
         messages.success(request, "Ваш email подтвержден!")

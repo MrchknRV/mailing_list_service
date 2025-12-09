@@ -17,9 +17,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from mailing import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", views.IndexView.as_view(), name="index"),
     path("mailing/", include("mailing.urls", namespace="mailing")),
     path("users/", include("users.urls", namespace="users")),
 ]

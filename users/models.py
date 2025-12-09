@@ -16,14 +16,15 @@ class User(AbstractUser):
         (ROLE_ADMIN, "Администратор"),
     ]
 
+    username = None
     email = models.EmailField(unique=True, verbose_name="Почта")
-    verification_token = models.CharField(max_length=12, blank=True, verbose_name="Ключ подтверждения")
+    verification_token = models.CharField(max_length=12, blank=True, verbose_name="Ключ подтверждения", null=True)
     is_verified = models.BooleanField(default=False, verbose_name="Подтвержден")
     is_blocked = models.BooleanField(default=False, verbose_name="Заблокирован")
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_USER, verbose_name="Роль")
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = []
 
     class Meta:
         verbose_name = "Пользователь"

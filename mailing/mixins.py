@@ -15,7 +15,7 @@ class OwnerRequiredMixin(UserPassesTestMixin):
 
 
 class OwnerQuerysetMixin:
-    def t_queryset(self):
+    def get_queryset(self):
         queryset = super().get_queryset()
 
         if not self.request.user.is_authenticated:

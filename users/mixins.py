@@ -19,7 +19,6 @@ class RoleRequiredMixin(UserPassesTestMixin):
             raise PermissionDenied("Не достаточно прав для доступа к этой странице")
         return redirect("users:login")
 
-
 class ManagerRequiredMixin(RoleRequiredMixin):
     allowed_role = [User.ROLE_MANAGER]
 
