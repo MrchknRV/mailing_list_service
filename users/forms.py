@@ -10,16 +10,13 @@ class UserRegisterForm(UserCreationForm):
         required=True,
     )
 
-    class Meta(UserCreationForm.Meta):
+    class Meta:
         model = User
-        fields = ("username", "email", "password1", "password2")
+        fields = ("email", "password1", "password2")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["email"].widget.attrs.update({"class": "form-control", "placeholder": "Введите ваш email"})
-        self.fields["username"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Введите имя пользователя"}
-        )
         self.fields["password1"].widget.attrs.update({"class": "form-control", "placeholder": "Введите пароль"})
         self.fields["password2"].widget.attrs.update({"class": "form-control", "placeholder": "Подтвердите пароль"})
 
@@ -31,33 +28,35 @@ class UserRegisterForm(UserCreationForm):
 
 
 class UserLoginForm(forms.Form):
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Введите имя пользователя или email"})
+    email = forms.EmailField(
+        label="Email",
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите ваш email'
+        })
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Введите пароль"})
     )
 
     def clean(self):
-        username = self.cleaned_data.get("username")
+        email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
 
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if not user:
-                try:
-                    user_obj = User.objects.get(email=username)
-                    user = authenticate(username=user_obj.username, password=password)
-                except User.DoesNotExist:
-                    pass
+        if email and password:
+            try:
+                user = User.objects.get(email=email)
+                user = authenticate(email=user.email, password=password)
 
-            if user is None:
-                raise forms.ValidationError("Неверное имя пользователя/email или пароль")
+                if user is None:
+                    raise forms.ValidationError("Неверный email или пароль")
 
-            if not user.is_active:
-                raise forms.ValidationError("Аккаунт заблокирован")
+                if not user.is_active:
+                    raise forms.ValidationError("Аккаунт заблокирован")
 
-            self.cleaned_data["user"] = user
+                self.cleaned_data["user"] = user
+            except User.DoesNotExist:
+                raise forms.ValidationError("Неверный email или пароль")
         return self.cleaned_data
 
 
@@ -81,9 +80,8 @@ class UserUpdateForm(UserChangeForm):
 
     class Meta:
         model = User
-        fields = ["username", "email", "first_name", "last_name"]
+        fields = ["email", "first_name", "last_name"]
         widgets = {
-            "username": forms.TextInput(attrs={"class": "form-control", "placeholder": "Введите имя пользователя"}),
             "email": forms.EmailInput(attrs={"class": "form-control", "placeholder": "Введите email"}),
             "first_name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Введите имя"}),
             "last_name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Введите фамилию"}),
