@@ -56,7 +56,7 @@ class UserProfile(models.Model):
     company = models.CharField(max_length=120, blank=True, null=True, verbose_name="Компания")
 
     def __str__(self):
-        return f"Профиль {self.user.username}"
+        return str(self.user.email) if self.user else "Без имени"
 
 
 @receiver(post_save, sender=User)
