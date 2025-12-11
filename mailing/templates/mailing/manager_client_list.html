@@ -89,7 +89,7 @@
                                 {% if client.owner.role == 'admin' %}bg-danger
                                 {% elif client.owner.role == 'manager' %}bg-warning
                                 {% else %}bg-secondary{% endif %}">
-                                {{ client.owner.username }}
+                                {{ client.owner.email }}
                             </span>
                                 {% if client.owner.is_blocked %}
                                     <span class="badge bg-danger ms-1">Заблокирован</span>

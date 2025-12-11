@@ -65,7 +65,7 @@
                         <tr>
                             <td>{{ mailing.id }}</td>
                             <td>
-                                <strong>{{ mailing.owner.username }}</strong>
+                                <strong>{{ mailing.owner.email }}</strong>
                                 {% if mailing.owner == request.user %}
                                     <span class="badge bg-primary">Вы</span>
                                 {% endif %}
